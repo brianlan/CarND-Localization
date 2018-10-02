@@ -4,8 +4,8 @@ def normalize(l):
 
 
 def sense(p_prev, Z, p_hit):
-    non_normalized_p = [float(Z == cell) * p_hit[1] + float(Z != cell) * p_hit[0] for cell in world]
-    p_cur = normalize([i * j for i, j in zip(p_prev, non_normalized_p)])
+    p_posterior = [float(Z == cell) * p_hit[1] + float(Z != cell) * p_hit[0] for cell in world]
+    p_cur = normalize([i * j for i, j in zip(p_prev, p_posterior)])
     return p_cur
 
 
@@ -19,7 +19,7 @@ def inaccurate_move(p, U, undershot=.1, overshot=.1):
     move_uncertainty = [undershot, 1 - undershot - overshot, overshot]
     _p = [0.] * n_locs
     for i in range(n_locs):
-        move_to_positions = [(i + U - 1) % n, (i + U) % n_locs, (i + U + 1) % n_locs]
+        move_to_positions = [(i + U - 1) % n_locs, (i + U) % n_locs, (i + U + 1) % n_locs]
         # print("{} => {}".format(i, move_to_positions))
         for j, pos in enumerate(move_to_positions):
             _p[pos] += p[i] * move_uncertainty[j]
@@ -37,6 +37,7 @@ motions = [1, 1]
 
 # for m in measurements:
 #     p = sense(p, m, p_hit)
+#     print(p)
 
 # for i in range(10):
 #     print(i - 5, p, '=>',  move(p, i - 5))
